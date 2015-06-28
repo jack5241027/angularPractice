@@ -1,0 +1,76 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <title></title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.1/angular.min.js"></script>
+    <link rel="stylesheet" href="../css/lib/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body ng-app="myApp">
+    <div ng-controller="MainController as main">
+        商品名稱：
+        <input ng-model="main.cart.PName" type="text">
+        <br> 購買數量:
+        <input ng-model="main.cart.Qty" type="number">
+        <br> 商品價格:
+        <input ng-model="main.cart.price" type="number">
+        <br>
+        <p>您購買{{main.cart.PName}}，{{main.cart.Qty}}件，共{{main.cart.price}}，折扣後：{{main.discount(main.cart.price,main.cart.Qty)}}</p>
+        <button ng-click="main.add()">加入購物車</button>
+        <input type="checkbox" ng-model="main.isCheck">
+        <pre ng-show="main.isCheck">{{main.carts | json}}
+		</pre>
+		<caption>
+			搜尋：<input ng-model="main.keyword" type="text">
+		</caption>
+
+        <table class="table">
+            <tr>
+                <th>#</th>
+                <th>商品名稱</th>
+                <th>
+                    <button ng-click="main.orderItem ='price';main.isOrderBy=true" ><i class="glyphicon glyphicon-chevron-up"></i></button>
+                    商品價格
+                    <button ng-click="main.orderItem ='price';main.isOrderBy=false"><i class="glyphicon glyphicon-chevron-down"></i></button>
+                </th>
+                <th>
+                    <button ng-click="main.orderItem ='Qty';main.isOrderBy=true"><i class="glyphicon glyphicon-chevron-up"></i></button>
+                    購買數量
+                    <button ng-click="main.orderItem ='Qty';main.isOrderBy=false"><i class="glyphicon glyphicon-chevron-down"></i></button>
+                </th>
+                <th>小計</th>
+                <th>功能</th>
+            </tr>
+            <tr ng-repeat="item in main.carts | orderBy : main.orderItem  : main.isOrderBy | filter : {'PName' : main.keyword}">
+                <td>{{ $index+1 }}</td>
+                <td>{{ item.PName }}</td>
+                <td>{{ item.price }}</td>
+                <td>
+                    <span ng-hide="main.isEdit">{{ item.Qty }}</span>
+                    <span><input ng-show='main.isEdit' ng-model="item.Qty" type="number"></span>
+                </td>
+                <td>{{ main.discount(item.price,item.Qty ) }}</td>
+                <th>
+                    <button ng-click="main.delete(item)">刪除</button>
+                    <button ng-click="main.edit(item)" ng-hide="main.isEdit">編輯</button>
+                    <button ng-click="main.update(item)" ng-show="main.isEdit">更新</button>
+                    <button ng-click="main.cancel(item)" ng-show="main.isEdit">取消</button>
+                </th>
+            </tr>
+            <tr>
+                <td>總計</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>{{main.sum()}}</td>
+            </tr>
+        </table>
+    </div>
+    <script src="../scripts/lib/jquery.min.js"></script>
+    <script src="../scripts/lib/TimelineMax.min.js"></script>
+    <script src="../scripts/main.js"></script>
+</body>
+
+</html>
